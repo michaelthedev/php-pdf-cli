@@ -1,0 +1,19 @@
+{
+    "name": "michaelthedev/php-pdf-cli",
+    "description": "Convert HTML to pdf",
+    "require": {
+        "symfony/console": "^6.3"
+    },
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Michael A.",
+            "email": "michael@logad.net"
+        }
+    ]
+}

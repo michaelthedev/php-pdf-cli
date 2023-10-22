@@ -1,0 +1,20 @@
+#!/usr/bin/env php
+<?php
+
+use App\Commands\Convert;
+use Symfony\Component\Console\Application;
+
+require __DIR__.'/../vendor/autoload.php';
+
+$application = new Application();
+
+try {
+
+    $application->add(new Convert());
+    $application->run();
+
+} catch (Exception $e) {
+
+    print($e->getMessage());
+
+}
