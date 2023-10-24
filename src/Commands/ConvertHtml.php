@@ -2,6 +2,7 @@
 
 namespace App\Commands;
 
+use App\Exceptions\PdfServiceException;
 use App\Services\HtmlToPdfService;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -14,14 +15,18 @@ use Symfony\Component\Console\Style\SymfonyStyle;
     description: 'Convert an html file to pdf',
     hidden: false
 )]
-final class Convert extends Command
+final class ConvertHtml extends Command
 {
-    private function getService(): HtmlToPdfService
+    private HtmlToPdfService $htmlToPdfService;
+
+    public function __construct(HtmlToPdfService $htmlToPdfService)
     {
-        return new HtmlToPdfService();
+        parent::__construct();
+
+        $this->htmlToPdfService = $htmlToPdfService;
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
 
@@ -32,19 +37,18 @@ final class Convert extends Command
             return $this->execute($input, $output);
         }
 
-        $service = $this->getService();
-        $service->setHtmlPath($answer);
+        try {
 
-        if (!$service->fileExists()) {
-            $io->error('File does not exist. Verify the location');
+            $this->htmlToPdfService->generate($answer);
+            // $pdfPath = $this->htmlToPdfService->getPath();
+
+            $io->success("Pdf generated 🎉🎉🎉\nYou can find it in the `storage` folder");
+
+        } catch (PdfServiceException $e) {
+
+            $io->error($e->getMessage());
 
             return $this->execute($input, $output);
-        }
-
-        if ($service->save('output.pdf')) {
-            $io->success('Pdf generated 🎉. Check output.pdf');
-        } else {
-            $io->error('Something went wrong');
         }
 
         return Command::SUCCESS;
