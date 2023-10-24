@@ -2,7 +2,9 @@
     "name": "michaelthedev/php-pdf-cli",
     "description": "Convert HTML to pdf",
     "require": {
-        "symfony/console": "^6.3"
+        "symfony/console": "^6.3",
+        "dompdf/dompdf": "^2.0",
+        "php-di/php-di": "^7.0"
     },
     "license": "MIT",
     "autoload": {
