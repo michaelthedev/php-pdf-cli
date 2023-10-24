@@ -1,7 +1,8 @@
 #!/usr/bin/env php
 <?php
 
-use App\Commands\Convert;
+use App\Commands\ConvertHtml;
+use App\Services\HtmlToPdfService;
 use Symfony\Component\Console\Application;
 
 require __DIR__.'/../vendor/autoload.php';
@@ -9,8 +10,14 @@ require __DIR__.'/../vendor/autoload.php';
 $application = new Application();
 
 try {
+    // todo: Use php-di for dependencies
 
-    $application->add(new Convert());
+    $htmlPdfService = new HtmlToPdfService(
+        new App\Libraries\DomPdf\DomPdfGenerator(),
+        __DIR__ . '/../storage/'
+    );
+
+    $application->add(new ConvertHtml($htmlPdfService));
     $application->run();
 
 } catch (Exception $e) {
