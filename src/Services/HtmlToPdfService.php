@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services;
 
+use App\Exceptions\PdfServiceException;
 use App\Services\Abstract\PdfService;
 
 final class HtmlToPdfService extends PdfService
@@ -21,11 +24,27 @@ final class HtmlToPdfService extends PdfService
 
     public function fileExists(): bool
     {
-        return file_exists($this->htmlPath);
+        // check if is a file and html
+        return is_file($this->htmlPath) && pathinfo($this->htmlPath)['extension'] === 'html';
     }
 
-    public function generatePdf()
+    /**
+     * @throws PdfServiceException
+     */
+    public function generate(string $arg): void
     {
-        // TODO: Implement generatePdf() method.
+        $this->setHtmlPath($arg);
+
+        if (!$this->fileExists()) {
+            throw new PdfServiceException('File does not exist');
+        }
+
+        $htmlContent = $this->getHtmlContent();
+
+        $savePath = $this->generator->generate($htmlContent);
+
+        if (!$this->save($savePath)) {
+            throw new PdfServiceException('Could not save the pdf');
+        }
     }
 }
