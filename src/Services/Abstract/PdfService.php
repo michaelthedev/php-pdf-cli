@@ -20,6 +20,8 @@ abstract class PdfService implements PdfServiceInterface
 
     public function save(string $path): bool
     {
+        // todo: setter for save path
+        // todo: dynamic file names
         return copy($path, $this->savePath . 'output.pdf');
     }
 
