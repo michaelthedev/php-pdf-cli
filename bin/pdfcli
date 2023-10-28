@@ -2,7 +2,9 @@
 <?php
 
 use App\Commands\ConvertHtml;
+use App\Commands\ConvertWebPage;
 use App\Services\HtmlToPdfService;
+use App\Services\WebpageToPdfService;
 use Symfony\Component\Console\Application;
 
 require __DIR__.'/../vendor/autoload.php';
@@ -16,8 +18,14 @@ try {
         new App\Libraries\DomPdf\DomPdfGenerator(),
         __DIR__ . '/../storage/'
     );
-
     $application->add(new ConvertHtml($htmlPdfService));
+
+    $webpagePdfService = new WebpageToPdfService(
+        new App\Libraries\DomPdf\DomPdfGenerator(),
+        __DIR__ . '/../storage/'
+    );
+    $application->add(new ConvertWebPage($webpagePdfService));
+
     $application->run();
 
 } catch (Exception $e) {
