@@ -13,7 +13,7 @@ final class WebpageToPdfService extends PdfService
 
     public function setPageUrl(string $pageUrl): self
     {
-        $this->pageUrl = $pageUrl;
+        $this->pageUrl = filter_var($pageUrl, FILTER_SANITIZE_URL);;
         return $this;
     }
 
@@ -25,7 +25,7 @@ final class WebpageToPdfService extends PdfService
     public function isValidUrl(): bool
     {
         // check the url is valid
-        return filter_var($this->pageUrl, FILTER_VALIDATE_URL);
+        return filter_var($this->pageUrl, FILTER_VALIDATE_URL) !== false;
     }
 
     /**
@@ -40,6 +40,9 @@ final class WebpageToPdfService extends PdfService
         }
 
         $htmlContent = $this->getHtmlContent();
+        if (empty($htmlContent)) {
+            throw new PdfServiceException('Could not get html content');
+        }
 
         $savePath = $this->generator->generate($htmlContent);
 
